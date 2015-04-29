@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.text.SimpleDateFormat;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -21,6 +22,7 @@ import javax.swing.SwingUtilities;
 
 import edu.cmu.cs.cs214.rec15.client.ChatClient;
 import edu.cmu.cs.cs214.rec15.client.ClientChangeListener;
+import edu.cmu.cs.cs214.rec15.server.Message;
 
 /**
  * ClientPanel a GUI for the ChatClient interface
@@ -126,17 +128,17 @@ public class ClientPanel extends JPanel implements ClientChangeListener {
         namePanel.add(this.usernameField);
         panel.add(namePanel);
 
-        JPanel portPanel = new JPanel();
-        portPanel.setLayout(new FlowLayout());
-        portPanel.add(this.portLabel);
-        portPanel.add(this.portField);
-        panel.add(portPanel);
-
         JPanel ipPanel = new JPanel();
         ipPanel.setLayout(new FlowLayout());
         ipPanel.add(this.ipLabel);
         ipPanel.add(this.ipField);
         panel.add(ipPanel);
+
+        JPanel portPanel = new JPanel();
+        portPanel.setLayout(new FlowLayout());
+        portPanel.add(this.portLabel);
+        portPanel.add(this.portField);
+        panel.add(portPanel);
 
         return panel;
     }
@@ -195,9 +197,17 @@ public class ClientPanel extends JPanel implements ClientChangeListener {
      * edu.cmu.cs.cs214.rec15.gui.ClientChangeListener#messageReceived(java.
      * lang.String)
      */
-    @Override
-    public void messageReceived(String username, String message) {
-        String newText = String.format(" %s: %s%n", username, message);
+    public void messageReceived(Message msg) {
+        // Formatter for the date. See link you want to change the output format
+        // https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+        // Usage: dateFormatter.format(date) -> String
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss Z");
+
+        // TODO: Make the server show the timestamp of the received message.
+        // Example output: [15:21:40 -0400] Person: Some message...
+
+        String newText = String.format(" %s: %s%n", msg.getSender(),
+                msg.getContent());
         this.chatArea.append(newText);
         chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
@@ -219,5 +229,12 @@ public class ClientPanel extends JPanel implements ClientChangeListener {
                 JOptionPane.YES_OPTION, JOptionPane.INFORMATION_MESSAGE, null,
                 options, options[0]);
     }
+
+
+	@Override
+	public void messageReceived(String username, String message) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
